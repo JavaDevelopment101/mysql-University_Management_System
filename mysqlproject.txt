@@ -1,0 +1,116 @@
+<-------------------------------------MySQL-Question---------------------------------->
+
+For the Associates: Associates to finish this activity before proceeding to the next activity. It is enough to
+identify the tables and column names, no need to create.
+Scenario: ABC college wants to develop a University Management System (UMS) to store information on
+students who join their college. The database should contain
+• Student’s personal information as well as student’s academic details.
+• It should store information on subjects taught at the university in various departments.
+• It should also store marks obtained by each student in each semester subject wise as well as the
+GPA for each semester.
+GPA is a rating calculated in a scale of ten considering the individual subject marks obtained and subjects
+weightage % in a semester.
+
+         Problem Statement:
+Using the following and identify the tables and columns needed for University Management System.
+• Student information should have registration_number, name, branch , contact #, DOB, Date of
+joining, Address, Email id.
+• Information on subjects like subject code, subject name and weightage for calculating GPA.
+• Students marks scored in each subject , semester wise.
+• Finally overall result of the student comprising GPA scored for a semester, scholarship eligibility.
+
+
+<-------------------------------------Answer--------------------------------->
+
+
+mysql> create database University_Management;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> use University_Management;
+Database changed
+
+ create table stu_info(reg_no varchar(11) primary key,name varchar(20),branch varchar(20),contact bigint,dob date,doj date,address varchar(50),mail_id varchar(50));
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> insert into stu_info values('A10001','Nilanjan','CS',7089345688,'1998-06-12','2022-06-01','Barrackpore','nilanjan@gmail.com'),
+    -> ('A10002','Randhir','EEE',8777586101,'1999-06-25','2022-05-04','Kolkata','randhir@gmail.com'),
+    -> ('A10003','Pallab','MCA',8683680837,'1999-05-20','2022-04-11','Hoogly','pallab@gmail.com'),
+    -> ('A10004','Shawin','MCA',7003997933,'1996-07-28','2022-05-19','Darjeeling','shawin@gmail.com'),
+    -> ('A10005','Saquib','ME',7005273232,'1998-08-12','2022-05-11','Girish Park','saquib@gmail.com');
+Query OK, 5 rows affected (0.03 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from stu_info;
++--------+----------+--------+------------+------------+------------+-------------+--------------------+
+| reg_no | name     | branch | contact    | dob        | doj        | address     | mail_id            |
++--------+----------+--------+------------+------------+------------+-------------+--------------------+
+| A10001 | Nilanjan | CS     | 7089345688 | 1998-06-12 | 2022-06-01 | Barrackpore | nilanjan@gmail.com |
+| A10002 | Randhir  | EEE    | 8777586101 | 1999-06-25 | 2022-05-04 | Kolkata     | randhir@gmail.com  |
+| A10003 | Pallab   | MCA    | 8683680837 | 1999-05-20 | 2022-04-11 | Hoogly      | pallab@gmail.com   |
+| A10004 | Shawin   | MCA    | 7003997933 | 1996-07-28 | 2022-05-19 | Darjeeling  | shawin@gmail.com   |
+| A10005 | Saquib   | ME     | 7005273232 | 1998-08-12 | 2022-05-11 | Girish Park | saquib@gmail.com   |
++--------+----------+--------+------------+------------+------------+-------------+--------------------+
+5 rows in set (0.01 sec)
+
+mysql> create table subject(sub_code varchar(5) primary key,sub1 int,sub2 int,sub3 int,weight int,sem varchar(5),reg_no varchar(11),foreign key(reg_no) references stu_info(reg_no),credit int);
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> desc subject;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| sub_code | varchar(5)  | NO   | PRI | NULL    |       |
+| sub1     | int         | YES  |     | NULL    |       |
+| sub2     | int         | YES  |     | NULL    |       |
+| sub3     | int         | YES  |     | NULL    |       |
+| weight   | int         | YES  |     | NULL    |       |
+| sem      | varchar(5)  | YES  |     | NULL    |       |
+| reg_no   | varchar(11) | YES  | MUL | NULL    |       |
+| credit   | int         | YES  |     | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+8 rows in set (0.08 sec)
+
+mysql> select * from subject;
+Empty set (0.00 sec)
+
+mysql> insert into subject values('S001',70,89,92,15,'1st','A10001',9),('S002',75,85,80,15,'1st','A10002',9),('S003',80,77,72,15,'1st','A10003',7),('S004',85,81,92,10,'1st','A10004',8),('S005',75,69,59,10,'1st','A10005',7);
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from subject;
++----------+------+------+------+--------+------+--------+--------+
+| sub_code | sub1 | sub2 | sub3 | weight | sem  | reg_no | credit |
++----------+------+------+------+--------+------+--------+--------+
+| S001     |   70 |   89 |   92 |     15 | 1st  | A10001 |      9 |
+| S002     |   75 |   85 |   80 |     15 | 1st  | A10002 |      9 |
+| S003     |   80 |   77 |   72 |     15 | 1st  | A10003 |      7 |
+| S004     |   85 |   81 |   92 |     10 | 1st  | A10004 |      8 |
+| S005     |   75 |   69 |   59 |     10 | 1st  | A10005 |      7 |
++----------+------+------+------+--------+------+--------+--------+
+5 rows in set (0.00 sec)
+
+mysql> select (sub1+sub2+sub3) as 'total',(weight*credit) as 'GPA' from subject;
++-------+------+
+| total | GPA  |
++-------+------+
+|   251 |  135 |
+|   240 |  135 |
+|   229 |  105 |
+|   258 |   80 |
+|   203 |   70 |
++-------+------+
+5 rows in set (0.00 sec)
+
+
+mysql>  select i.name,i.reg_no,s.sub1,s.sub2,s.sub3,s.weight,s.credit,(sub1+sub2+sub3)as'total',(weight*credit)as'GPA' from stu_info i inner join subject s on i.reg_no=s.reg_no;
++----------+--------+------+------+------+--------+--------+-------+------+
+| name     | reg_no | sub1 | sub2 | sub3 | weight | credit | total | GPA  |
++----------+--------+------+------+------+--------+--------+-------+------+
+| Nilanjan | A10001 |   70 |   89 |   92 |     15 |      9 |   251 |  135 |
+| Randhir  | A10002 |   75 |   85 |   80 |     15 |      9 |   240 |  135 |
+| Pallab   | A10003 |   80 |   77 |   72 |     15 |      7 |   229 |  105 |
+| Shawin   | A10004 |   85 |   81 |   92 |     10 |      8 |   258 |   80 |
+| Saquib   | A10005 |   75 |   69 |   59 |     10 |      7 |   203 |   70 |
++----------+--------+------+------+------+--------+--------+-------+------+
+5 rows in set (0.00 sec)
+
